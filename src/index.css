@@ -1,1 +1,38 @@
 @import "tailwindcss";
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fadeUp 700ms ease both;
+}
+
+.hero-swiper .swiper-pagination {
+  bottom: 20px !important;
+}
+
+.hero-swiper .swiper-pagination-bullet {
+  height: 10px;
+  width: 10px;
+  opacity: 1;
+  background: rgba(199, 210, 254, 0.9);
+}
+
+.hero-swiper .swiper-pagination-bullet-active {
+  background: #ffffff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up {
+    animation: none;
+  }
+}
