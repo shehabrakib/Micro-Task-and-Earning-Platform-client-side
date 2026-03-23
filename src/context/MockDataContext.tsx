@@ -12,6 +12,7 @@ type SubmissionItem = (typeof initialSubmissions)[number]
 type WithdrawalItem = (typeof initialWithdrawals)[number]
 type UserItem = (typeof initialUsers)[number]
 type PaymentItem = (typeof initialPayments)[number]
+type UserRole = UserItem['role']
 
 type CreateSubmissionInput = {
   task_id: string
@@ -74,6 +75,10 @@ type MockDataContextValue = {
   deleteTask: (taskId: string) => ActionResult
   approveSubmission: (submissionId: string) => ActionResult
   rejectSubmission: (submissionId: string) => ActionResult
+  approveWithdrawal: (withdrawalId: string) => ActionResult
+  updateUserRole: (userId: string, role: UserRole) => ActionResult
+  deleteUser: (userId: string) => ActionResult
+  deleteTaskByAdmin: (taskId: string) => ActionResult
   purchaseCoinPackage: (input: PurchasePackageInput) => ActionResult
   getUserByEmail: (email: string) => UserItem | undefined
 }
@@ -315,6 +320,91 @@ export function MockDataProvider({ children }: MockDataProviderProps) {
     return { success: true }
   }
 
+  const approveWithdrawal = (withdrawalId: string): ActionResult => {
+    const targetWithdrawal = withdrawals.find(
+      (withdrawal) => withdrawal._id === withdrawalId,
+    )
+
+    if (targetWithdrawal === undefined) {
+      return { success: false, message: 'Withdrawal request not found.' }
+    }
+
+    if (targetWithdrawal.status === 'approved') {
+      return { success: false, message: 'This withdrawal is already approved.' }
+    }
+
+    const worker = getUserByEmail(targetWithdrawal.worker_email)
+    if (worker === undefined) {
+      return { success: false, message: 'Worker account not found.' }
+    }
+
+    const nextWorkerCoin = worker.coin - targetWithdrawal.withdrawal_coin
+    if (nextWorkerCoin < 0) {
+      return { success: false, message: 'Worker does not have enough coins.' }
+    }
+
+    setWithdrawals((previousWithdrawals) =>
+      previousWithdrawals.map((withdrawal) => {
+        if (withdrawal._id !== withdrawalId) {
+          return withdrawal
+        }
+
+        return {
+          ...withdrawal,
+          status: 'approved',
+        }
+      }),
+    )
+
+    setUserCoinByEmail(worker.email, nextWorkerCoin)
+    return { success: true }
+  }
+
+  const updateUserRole = (userId: string, role: UserRole): ActionResult => {
+    const existingUser = users.find((user) => user._id === userId)
+    if (existingUser === undefined) {
+      return { success: false, message: 'User not found.' }
+    }
+
+    setUsers((previousUsers) =>
+      previousUsers.map((user) => {
+        if (user._id !== userId) {
+          return user
+        }
+
+        return {
+          ...user,
+          role,
+        }
+      }),
+    )
+
+    return { success: true }
+  }
+
+  const deleteUser = (userId: string): ActionResult => {
+    const existingUser = users.find((user) => user._id === userId)
+    if (existingUser === undefined) {
+      return { success: false, message: 'User not found.' }
+    }
+
+    setUsers((previousUsers) => previousUsers.filter((user) => user._id !== userId))
+    return { success: true }
+  }
+
+  const deleteTaskByAdmin = (taskId: string): ActionResult => {
+    const existingTask = tasks.find((task) => task._id === taskId)
+    if (existingTask === undefined) {
+      return { success: false, message: 'Task not found.' }
+    }
+
+    // Admin deletes a task directly and no coin refund is applied.
+    setTasks((previousTasks) =>
+      previousTasks.filter((task) => task._id !== existingTask._id),
+    )
+    return { success: true }
+  }
+
   const purchaseCoinPackage = (input: PurchasePackageInput): ActionResult => {
     const allowedPackages = new Map<number, number>([
       [1, 10],
@@ -360,6 +450,10 @@ export function MockDataProvider({ children }: MockDataProviderProps) {
     deleteTask,
     approveSubmission,
     rejectSubmission,
+    approveWithdrawal,
+    updateUserRole,
+    deleteUser,
+    deleteTaskByAdmin,
     purchaseCoinPackage,
     getUserByEmail,
   }

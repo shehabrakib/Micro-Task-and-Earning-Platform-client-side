@@ -1,3 +1,6 @@
+import AdminHomePage from './pages/dashboard/AdminHomePage'
+import AdminManageTasksPage from './pages/dashboard/AdminManageTasksPage'
+import AdminManageUsersPage from './pages/dashboard/AdminManageUsersPage'
 import { Route, Routes } from 'react-router-dom'
 import { useAuth } from './hooks/useAuth'
 import DashboardLayout from './layouts/DashboardLayout'
@@ -8,7 +11,6 @@ import BuyerMyTasksPage from './pages/dashboard/BuyerMyTasksPage'
 import BuyerPaymentHistoryPage from './pages/dashboard/BuyerPaymentHistoryPage'
 import BuyerPurchaseCoinPage from './pages/dashboard/BuyerPurchaseCoinPage'
 import DashboardHomeRedirect from './pages/dashboard/DashboardHomeRedirect'
-import DashboardSectionPage from './pages/dashboard/DashboardSectionPage'
 import WorkerHomePage from './pages/dashboard/WorkerHomePage'
 import WorkerSubmissionsPage from './pages/dashboard/WorkerSubmissionsPage'
 import WorkerTaskDetailsPage from './pages/dashboard/WorkerTaskDetailsPage'
@@ -135,11 +137,7 @@ function App() {
             path="admin-home"
             element={
               <RoleRoute requiredRole="admin">
-                <DashboardSectionPage
-                  badge="Admin Home"
-                  title="Admin dashboard shell is ready"
-                  description="This protected admin route confirms FE-05 role-aware shell support for admin users."
-                />
+                <AdminHomePage />
               </RoleRoute>
             }
           />
@@ -147,11 +145,7 @@ function App() {
             path="manage-users"
             element={
               <RoleRoute requiredRole="admin">
-                <DashboardSectionPage
-                  badge="Manage Users"
-                  title="User management page placeholder"
-                  description="The FE-05 shell and role-based access are ready. User table and role controls will be added in FE-08."
-                />
+                <AdminManageUsersPage />
               </RoleRoute>
             }
           />
@@ -159,11 +153,7 @@ function App() {
             path="manage-tasks"
             element={
               <RoleRoute requiredRole="admin">
-                <DashboardSectionPage
-                  badge="Manage Tasks"
-                  title="Task management page placeholder"
-                  description="This protected admin route is connected. Task management table functionality will be implemented in FE-08."
-                />
+                <AdminManageTasksPage />
               </RoleRoute>
             }
           />
