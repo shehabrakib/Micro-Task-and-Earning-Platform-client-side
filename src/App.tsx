@@ -4,6 +4,11 @@ import DashboardLayout from './layouts/DashboardLayout'
 import PublicLayout from './layouts/PublicLayout'
 import DashboardHomeRedirect from './pages/dashboard/DashboardHomeRedirect'
 import DashboardSectionPage from './pages/dashboard/DashboardSectionPage'
+import WorkerHomePage from './pages/dashboard/WorkerHomePage'
+import WorkerSubmissionsPage from './pages/dashboard/WorkerSubmissionsPage'
+import WorkerTaskDetailsPage from './pages/dashboard/WorkerTaskDetailsPage'
+import WorkerTaskListPage from './pages/dashboard/WorkerTaskListPage'
+import WorkerWithdrawalsPage from './pages/dashboard/WorkerWithdrawalsPage'
 import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import NotFoundPage from './pages/NotFoundPage'
@@ -43,11 +48,7 @@ function App() {
             path="worker-home"
             element={
               <RoleRoute requiredRole="worker">
-                <DashboardSectionPage
-                  badge="Worker Home"
-                  title="Worker dashboard shell is ready"
-                  description="This role-specific home route now runs inside the FE-05 dashboard layout. The full worker dashboard widgets will be added in the next epic."
-                />
+                <WorkerHomePage />
               </RoleRoute>
             }
           />
@@ -55,11 +56,15 @@ function App() {
             path="task-list"
             element={
               <RoleRoute requiredRole="worker">
-                <DashboardSectionPage
-                  badge="Task List"
-                  title="Worker task list page placeholder"
-                  description="Sidebar navigation, route protection, and dashboard shell are complete. Task cards and filters will be added in FE-06."
-                />
+                <WorkerTaskListPage />
+              </RoleRoute>
+            }
+          />
+          <Route
+            path="task-list/:taskId"
+            element={
+              <RoleRoute requiredRole="worker">
+                <WorkerTaskDetailsPage />
               </RoleRoute>
             }
           />
@@ -67,11 +72,7 @@ function App() {
             path="my-submissions"
             element={
               <RoleRoute requiredRole="worker">
-                <DashboardSectionPage
-                  badge="My Submissions"
-                  title="Submission history page placeholder"
-                  description="This protected route is ready and connected to worker navigation. Submission table and status views will be implemented in FE-06."
-                />
+                <WorkerSubmissionsPage />
               </RoleRoute>
             }
           />
@@ -79,11 +80,7 @@ function App() {
             path="withdrawals"
             element={
               <RoleRoute requiredRole="worker">
-                <DashboardSectionPage
-                  badge="Withdrawals"
-                  title="Worker withdrawal page placeholder"
-                  description="The route exists under the FE-05 shell with role access control. Withdrawal form and validations will be implemented in FE-06."
-                />
+                <WorkerWithdrawalsPage />
               </RoleRoute>
             }
           />
