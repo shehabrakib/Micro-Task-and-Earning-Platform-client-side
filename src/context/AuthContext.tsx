@@ -20,7 +20,6 @@ type AuthContextValue = {
   register: (
     name: string,
     email: string,
-    photoURL: string,
     password: string,
     role: RegisterRole,
   ) => Promise<void>
@@ -154,7 +153,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const register = async (
     name: string,
     email: string,
-    photoURL: string,
     password: string,
     role: RegisterRole,
   ): Promise<void> => {
@@ -171,7 +169,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
       _id: `u-${Date.now()}`,
       name: name.trim(),
       email: normalizedEmail,
-      photoURL: photoURL.trim(),
+      // New users get a predictable mock avatar until profile editing is added.
+      photoURL: `https://i.pravatar.cc/150?u=${encodeURIComponent(normalizedEmail)}`,
       role,
       coin: role === 'worker' ? 10 : 50,
     }
