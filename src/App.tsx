@@ -2,6 +2,11 @@ import { Route, Routes } from 'react-router-dom'
 import { useAuth } from './hooks/useAuth'
 import DashboardLayout from './layouts/DashboardLayout'
 import PublicLayout from './layouts/PublicLayout'
+import BuyerAddTaskPage from './pages/dashboard/BuyerAddTaskPage'
+import BuyerHomePage from './pages/dashboard/BuyerHomePage'
+import BuyerMyTasksPage from './pages/dashboard/BuyerMyTasksPage'
+import BuyerPaymentHistoryPage from './pages/dashboard/BuyerPaymentHistoryPage'
+import BuyerPurchaseCoinPage from './pages/dashboard/BuyerPurchaseCoinPage'
 import DashboardHomeRedirect from './pages/dashboard/DashboardHomeRedirect'
 import DashboardSectionPage from './pages/dashboard/DashboardSectionPage'
 import WorkerHomePage from './pages/dashboard/WorkerHomePage'
@@ -89,11 +94,7 @@ function App() {
             path="buyer-home"
             element={
               <RoleRoute requiredRole="buyer">
-                <DashboardSectionPage
-                  badge="Buyer Home"
-                  title="Buyer dashboard shell is ready"
-                  description="This route confirms FE-05 role navigation and dashboard layout are working for buyer accounts."
-                />
+                <BuyerHomePage />
               </RoleRoute>
             }
           />
@@ -101,11 +102,7 @@ function App() {
             path="add-task"
             element={
               <RoleRoute requiredRole="buyer">
-                <DashboardSectionPage
-                  badge="Add Task"
-                  title="Add task page placeholder"
-                  description="This protected buyer route is now connected. The full task creation form will be built in FE-07."
-                />
+                <BuyerAddTaskPage />
               </RoleRoute>
             }
           />
@@ -113,11 +110,7 @@ function App() {
             path="my-tasks"
             element={
               <RoleRoute requiredRole="buyer">
-                <DashboardSectionPage
-                  badge="My Tasks"
-                  title="Buyer task list placeholder"
-                  description="Navigation and role guard are complete. The buyer task table with update/delete actions will be implemented in FE-07."
-                />
+                <BuyerMyTasksPage />
               </RoleRoute>
             }
           />
@@ -125,11 +118,7 @@ function App() {
             path="purchase-coin"
             element={
               <RoleRoute requiredRole="buyer">
-                <DashboardSectionPage
-                  badge="Purchase Coin"
-                  title="Coin purchase page placeholder"
-                  description="This buyer route is wired into the FE-05 shell. Package cards and dummy payment flow will be added in FE-07."
-                />
+                <BuyerPurchaseCoinPage />
               </RoleRoute>
             }
           />
@@ -137,11 +126,7 @@ function App() {
             path="payment-history"
             element={
               <RoleRoute requiredRole="buyer">
-                <DashboardSectionPage
-                  badge="Payment History"
-                  title="Payment history page placeholder"
-                  description="The route and role restriction are ready. Payment table UI will be implemented in FE-07."
-                />
+                <BuyerPaymentHistoryPage />
               </RoleRoute>
             }
           />

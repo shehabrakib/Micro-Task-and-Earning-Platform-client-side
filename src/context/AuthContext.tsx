@@ -24,6 +24,7 @@ type AuthContextValue = {
     role: RegisterRole,
   ) => Promise<void>
   logout: () => void
+  updateCurrentUserCoin: (nextCoin: number) => void
 }
 
 const TOKEN_STORAGE_KEY = 'token'
@@ -191,6 +192,30 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setCurrentUser(null)
   }
 
+  const updateCurrentUserCoin = (nextCoin: number): void => {
+    if (currentUser === null) {
+      return
+    }
+
+    setCurrentUser({
+      ...currentUser,
+      coin: nextCoin,
+    })
+
+    setMockUsers((previousUsers) =>
+      previousUsers.map((user) => {
+        if (user.email.toLowerCase() !== currentUser.email.toLowerCase()) {
+          return user
+        }
+
+        return {
+          ...user,
+          coin: nextCoin,
+        }
+      }),
+    )
+  }
+
   useEffect(() => {
     const storedToken = localStorage.getItem(TOKEN_STORAGE_KEY)
 
@@ -227,6 +252,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     login,
     register,
     logout,
+    updateCurrentUserCoin,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
