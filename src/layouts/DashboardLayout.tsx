@@ -14,7 +14,7 @@ import {
 import type { IconType } from 'react-icons/lib'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
-import { notifications } from '../mock/mockData'
+import { useMockData } from '../hooks/useMockData'
 
 type DashboardNavItem = {
   label: string
@@ -143,6 +143,7 @@ function getNotificationDotClass(message: string): string {
 
 function DashboardLayout() {
   const { currentUser, logout } = useAuth()
+  const { notifications } = useMockData()
   const location = useLocation()
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [isNotificationOpen, setIsNotificationOpen] = useState(false)
@@ -344,18 +345,9 @@ function DashboardLayout() {
                 </button>
 
                 {isNotificationOpen ? (
-                  <div className="absolute right-0 top-10 z-30 w-[320px] overflow-hidden rounded-xl border border-black/10 bg-white shadow-xl">
-                    <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
-                      <p className="text-sm font-semibold text-slate-900">
-                        Notifications
-                      </p>
-                      <button
-                        type="button"
-                        className="text-xs font-medium text-indigo-600"
-                        onClick={() => setIsNotificationOpen(false)}
-                      >
-                        Mark all read
-                      </button>
+                  <div className="absolute right-0 top-10 z-30 w-[min(92vw,20rem)] overflow-hidden rounded-xl border border-black/10 bg-white shadow-xl">
+                    <div className="border-b border-slate-100 px-4 py-3">
+                      <p className="text-sm font-semibold text-slate-900">Notifications</p>
                     </div>
 
                     {userNotifications.length === 0 ? (

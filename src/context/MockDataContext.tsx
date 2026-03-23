@@ -1,5 +1,6 @@
 import { createContext, useState, type ReactNode } from 'react'
 import {
+  notifications as initialNotifications,
   payments as initialPayments,
   submissions as initialSubmissions,
   tasks as initialTasks,
@@ -12,6 +13,7 @@ type SubmissionItem = (typeof initialSubmissions)[number]
 type WithdrawalItem = (typeof initialWithdrawals)[number]
 type UserItem = (typeof initialUsers)[number]
 type PaymentItem = (typeof initialPayments)[number]
+type NotificationItem = (typeof initialNotifications)[number]
 type UserRole = UserItem['role']
 
 type CreateSubmissionInput = {
@@ -68,6 +70,7 @@ type MockDataContextValue = {
   submissions: SubmissionItem[]
   withdrawals: WithdrawalItem[]
   payments: PaymentItem[]
+  notifications: NotificationItem[]
   addSubmission: (input: CreateSubmissionInput) => void
   addWithdrawalRequest: (input: CreateWithdrawalInput) => void
   createTask: (input: CreateTaskInput) => ActionResult
@@ -110,6 +113,9 @@ export function MockDataProvider({ children }: MockDataProviderProps) {
   const [payments, setPayments] = useState<PaymentItem[]>(() =>
     initialPayments.map((payment) => ({ ...payment })),
   )
+  const [notifications, setNotifications] = useState<NotificationItem[]>(() =>
+    initialNotifications.map((notification) => ({ ...notification })),
+  )
 
   const addSubmission = (input: CreateSubmissionInput) => {
     const nextSubmission: SubmissionItem = {
@@ -127,6 +133,11 @@ export function MockDataProvider({ children }: MockDataProviderProps) {
     }
 
     setSubmissions((previousSubmissions) => [nextSubmission, ...previousSubmissions])
+    createNotification(
+      `A new submission has been received for your task "${input.task_title}".`,
+      input.buyer_email,
+      '/dashboard/buyer-home',
+    )
   }
 
   const addWithdrawalRequest = (input: CreateWithdrawalInput) => {
@@ -166,6 +177,26 @@ export function MockDataProvider({ children }: MockDataProviderProps) {
         }
       }),
     )
+  }
+
+  const createNotification = (
+    message: string,
+    toEmail: string,
+    actionRoute: string,
+  ) => {
+    const nextNotification: NotificationItem = {
+      _id: createRandomId('n'),
+      message,
+      toEmail,
+      actionRoute,
+      createdAt: new Date().toISOString(),
+    }
+
+    // Keep newest notifications at the top for a simple UI render order.
+    setNotifications((previousNotifications) => [
+      nextNotification,
+      ...previousNotifications,
+    ])
   }
 
   const createTask = (input: CreateTaskInput): ActionResult => {
@@ -279,6 +310,12 @@ export function MockDataProvider({ children }: MockDataProviderProps) {
       )
     }
 
+    createNotification(
+      `Your submission for "${targetSubmission.task_title}" was approved.`,
+      targetSubmission.worker_email,
+      '/dashboard/my-submissions',
+    )
+
     return { success: true }
   }
 
@@ -315,6 +352,12 @@ export function MockDataProvider({ children }: MockDataProviderProps) {
           required_workers: task.required_workers + 1,
         }
       }),
+    )
+
+    createNotification(
+      `Your submission for "${targetSubmission.task_title}" was rejected.`,
+      targetSubmission.worker_email,
+      '/dashboard/my-submissions',
     )
 
     return { success: true }
@@ -357,6 +400,11 @@ export function MockDataProvider({ children }: MockDataProviderProps) {
     )
 
     setUserCoinByEmail(worker.email, nextWorkerCoin)
+    createNotification(
+      `Your withdrawal request of $${targetWithdrawal.withdrawal_amount} was approved.`,
+      targetWithdrawal.worker_email,
+      '/dashboard/withdrawals',
+    )
     return { success: true }
   }
 
@@ -443,6 +491,7 @@ export function MockDataProvider({ children }: MockDataProviderProps) {
     submissions,
     withdrawals,
     payments,
+    notifications,
     addSubmission,
     addWithdrawalRequest,
     createTask,
